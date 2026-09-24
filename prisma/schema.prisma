@@ -1,0 +1,194 @@
+// LoveStory database schema
+// SQLite-backed (sandbox) — mirrors the Supabase/Postgres production design.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ---- Core ownership ----
+
+model Creator {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String   @unique
+  email     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  credits        CreditWallet?
+  payments       Payment[]
+  drafts         LoveDraft[]
+  websites       LoveWebsite[]
+  images         Image[]
+  idempotency    IdempotencyKey[]
+  otpRequests    OtpRequest[]
+  sessions       Session[]
+}
+
+model Session {
+  id         String   @id @default(cuid())
+  creatorId  String
+  token      String   @unique
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  creator Creator @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+  @@index([creatorId])
+}
+
+model OtpRequest {
+  id         String   @id @default(cuid())
+  creatorId  String?
+  phone      String
+  code       String
+  consumed   Boolean  @default(false)
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  creator Creator? @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+  @@index([phone])
+}
+
+model CreditWallet {
+  id           String  @id @default(cuid())
+  creatorId    String  @unique
+  totalCredits Int     @default(0)
+  usedCredits  Int     @default(0)
+
+  creator Creator @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+  // remaining = totalCredits - usedCredits  (enforced in app layer; check constraint below)
+}
+
+model Payment {
+  id                String   @id @default(cuid())
+  creatorId         String
+  amount            Int
+  currency          String
+  creditsGranted    Int
+  provider          String   @default("fake")
+  providerOrderId   String   @unique
+  providerPaymentId String?
+  signature         String?
+  status            String   @default("CREATED") // CREATED | PAID | FAILED
+  createdAt         DateTime @default(now())
+  verifiedAt        DateTime?
+
+  creator Creator @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+  @@index([creatorId])
+}
+
+model LoveDraft {
+  id              String   @id @default(cuid())
+  creatorId       String
+  status          String   @default("DRAFT") // DRAFT | READY_TO_PUBLISH | PUBLICATION_FAILED
+  // creator / recipient
+  creatorName     String?
+  phone           String?
+  intro           String?
+  emotion         String?
+  partnerName     String?
+  relationship    String?
+  story           String?
+  specialMessage  String?
+  finalMessage    String?
+  signature       String?
+  shareConsent    Boolean  @default(false)
+  musicEnabled    Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  creator  Creator @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  images   Image[]
+  website  LoveWebsite?
+
+  @@index([creatorId])
+}
+
+model LoveWebsite {
+  id              String   @id @default(cuid())
+  creatorId       String
+  draftId         String   @unique
+  slug            String   @unique
+  status          String   @default("PUBLISHED") // PUBLISHED | DELETE_REQUESTED | DELETED | DELETE_FAILED
+  // snapshot of content at publish time
+  creatorName     String
+  phone           String?
+  intro           String?
+  emotion         String
+  partnerName     String
+  relationship    String?
+  story           String
+  specialMessage  String?
+  finalMessage    String?
+  signature       String?
+  shareConsent    Boolean  @default(true)
+  musicEnabled    Boolean  @default(false)
+  publishedAt     DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  creator Creator @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  draft   LoveDraft @relation(fields: [draftId], references: [id], onDelete: Cascade)
+  images  Image[]
+
+  @@index([creatorId])
+}
+
+model Image {
+  id          String   @id @default(cuid())
+  creatorId   String
+  draftId     String?
+  websiteId   String?
+  storagePath String
+  mimeType    String
+  width       Int
+  height      Int
+  sizeBytes   Int
+  caption     String?
+  state       String   @default("SELECTED")
+  // SELECTED | VALIDATING | UPLOAD_PENDING | UPLOADING | UPLOADED | PROCESSING | READY | FAILED
+  // | DELETE_REQUESTED | DELETING | DELETED | DELETE_FAILED
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  creator  Creator      @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  draft    LoveDraft?   @relation(fields: [draftId], references: [id], onDelete: Cascade)
+  website  LoveWebsite? @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+
+  // XOR constraint enforced in app layer (draft XOR website)
+  @@index([draftId])
+  @@index([websiteId])
+}
+
+model IdempotencyKey {
+  id         String   @id @default(cuid())
+  creatorId  String
+  key        String
+  operation  String
+  response   String
+  createdAt  DateTime @default(now())
+  expiresAt  DateTime
+
+  creator Creator @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+  @@unique([creatorId, key, operation])
+  @@index([creatorId])
+}
+
+model CleanupJob {
+  id         String   @id @default(cuid())
+  imageId    String?
+  status     String   @default("PENDING") // PENDING | DONE | FAILED
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}

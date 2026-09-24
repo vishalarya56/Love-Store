@@ -1,0 +1,268 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================
+   LoveStory Design Tokens
+   ============================================================ */
+:root {
+  --radius: 0.75rem;
+
+  /* shadcn compatibility */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.62 0.21 350); /* love pink 500-ish */
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0.02 350);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.95 0.04 350);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.62 0.21 350);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.62 0.21 350);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.62 0.21 350);
+
+  /* ---- LoveStory palette ---- */
+  --love-pink-50: #FFF5F8;
+  --love-pink-100: #FFE4EC;
+  --love-pink-200: #FFC7D8;
+  --love-pink-300: #FF9FBA;
+  --love-pink-400: #FF7098;
+  --love-pink-500: #FF4F81;
+  --love-pink-600: #E93669;
+  --love-rose: #F43F70;
+  --love-purple: #A855F7;
+  --love-red: #EF4444;
+  --love-white: #FFFFFF;
+  --love-text: #3B1725;
+  --love-muted: #8B6472;
+  --love-border: rgba(255,105,150,0.20);
+  --love-overlay: rgba(255,255,255,0.55);
+
+  /* ---- Romantic gradients ---- */
+  --love-grad-bg: linear-gradient(135deg, #FFF5F8 0%, #FFD6E5 50%, #FFB5CB 100%);
+  --love-grad-romantic: linear-gradient(135deg, #FFB6C9 0%, #FF7098 50%, #C084FC 100%);
+  --love-grad-button: linear-gradient(135deg, #FF7098 0%, #FF4F81 100%);
+  --love-grad-dark: linear-gradient(135deg, #2B0B18 0%, #4A1028 50%, #24102F 100%);
+  --love-grad-warm-gold: linear-gradient(135deg, #FFE7B4 0%, #FFB59C 50%, #FF9FB2 100%);
+
+  /* ---- Glass card ---- */
+  --love-glass-bg: rgba(255,255,255,0.55);
+  --love-glass-blur: 18px;
+  --love-glass-border: rgba(255,255,255,0.65);
+  --love-glass-shadow: 0 15px 45px rgba(155,60,90,0.12);
+
+  /* ---- Fonts ---- */
+  --font-heading: var(--font-playfair), Georgia, serif;
+  --font-body: var(--font-poppins), system-ui, sans-serif;
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.7 0.19 350);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.7 0.19 350);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-body);
+  --font-heading: var(--font-heading);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+  h1, h2, h3, h4, .font-heading {
+    font-family: var(--font-heading);
+  }
+}
+
+/* ============================================================
+   LoveStory utility classes
+   ============================================================ */
+.love-glass {
+  background: var(--love-glass-bg);
+  backdrop-filter: blur(var(--love-glass-blur));
+  -webkit-backdrop-filter: blur(var(--love-glass-blur));
+  border: 1px solid var(--love-glass-border);
+  box-shadow: var(--love-glass-shadow);
+}
+
+.love-glass-strong {
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.75);
+  box-shadow: 0 20px 60px rgba(155,60,90,0.18);
+}
+
+.love-btn {
+  background: var(--love-grad-button);
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(255,79,129,0.35), inset 0 1px 0 rgba(255,255,255,0.3);
+}
+
+.love-text-gradient {
+  background: var(--love-grad-romantic);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Soft glow used behind hero heart */
+.love-glow {
+  background: radial-gradient(circle at center, rgba(255,127,158,0.55) 0%, rgba(255,127,158,0.15) 45%, transparent 70%);
+  filter: blur(20px);
+}
+
+/* gentle heartbeat */
+@keyframes love-heartbeat {
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.12); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.09); }
+  70% { transform: scale(1); }
+}
+.love-heartbeat { animation: love-heartbeat 1.6s ease-in-out infinite; }
+
+/* soft floating */
+@keyframes love-float {
+  0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+  10% { opacity: var(--love-particle-opacity, 0.6); }
+  90% { opacity: var(--love-particle-opacity, 0.6); }
+  100% { transform: translateY(-120px) translateX(var(--love-particle-drift, 20px)) rotate(40deg); opacity: 0; }
+}
+
+/* sparkle twinkle */
+@keyframes love-twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.7); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+/* shimmer for text reveal */
+@keyframes love-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+/* glow pulse */
+@keyframes love-glow-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.08); }
+}
+.love-glow-pulse { animation: love-glow-pulse 3.5s ease-in-out infinite; }
+
+/* Slow gradient pan for backgrounds */
+@keyframes love-pan {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.love-pan { background-size: 200% 200%; animation: love-pan 14s ease infinite; }
+
+/* Custom scrollbar for max-height lists */
+.love-scroll::-webkit-scrollbar { width: 6px; }
+.love-scroll::-webkit-scrollbar-track { background: transparent; }
+.love-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255,105,150,0.35); border-radius: 999px;
+}
+
+/* Hide scrollbar for swipe galleries */
+.love-no-scrollbar::-webkit-scrollbar { display: none; }
+.love-no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .love-heartbeat,
+  .love-glow-pulse,
+  .love-pan,
+  .love-float,
+  .love-twinkle {
+    animation: none !important;
+  }
+  * { scroll-behavior: auto !important; }
+}
+
+/* Section text sizing tuned for mobile, scales on desktop */
+.love-hero-title { font-size: clamp(2rem, 8vw, 3.5rem); line-height: 1.1; }
+.love-section-title { font-size: clamp(1.5rem, 6vw, 2.5rem); line-height: 1.15; }
+.love-body { font-size: clamp(1rem, 4vw, 1.125rem); line-height: 1.7; }
+
+/* prevent horizontal overflow globally on love experience */
+.love-viewport { overflow-x: hidden; }
