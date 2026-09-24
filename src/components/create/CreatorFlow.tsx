@@ -24,6 +24,7 @@ import {
 import { useNavigate } from "@/hooks/use-hash-route";
 import { useAuth } from "@/stores/auth-store";
 import {
+  apiGuestSession,
   apiCreateDraft,
   apiGetDraft,
   apiPatchDraft,
@@ -119,7 +120,17 @@ export default function CreatorFlow({ draftId }: { draftId?: string }) {
           toast({ title: "Couldn't load draft", description: r.error.message });
         }
       } else {
-        const r = await apiCreateDraft();
+        // Login-free mode: make sure a guest session exists immediately before
+        // creating the draft. This also recovers gracefully if the initial
+        // session bootstrap was lost/blocked by the browser or deployment.
+        let r = await apiCreateDraft();
+        if (!r.success && r.error.code === "AUTH_REQUIRED") {
+          const guest = await apiGuestSession();
+          if (guest.success) r = await apiCreateDraft();
+          else {
+            toast({ title: "Couldn't start guest session", description: guest.error.message });
+          }
+        }
         if (cancelled) return;
         if (r.success) {
           setDraft(r.data);
