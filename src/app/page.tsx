@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useHashRoute, navigate } from "@/hooks/use-hash-route";
 import { useAuth } from "@/stores/auth-store";
-import { AuthModal } from "@/components/auth/AuthModal";
 import LandingPage from "@/components/landing/LandingPage";
 import CreatorFlow from "@/components/create/CreatorFlow";
 import Dashboard from "@/components/dashboard/Dashboard";
@@ -73,7 +72,6 @@ export default function Home() {
   return (
     <>
       {view}
-      <AuthModal />
     </>
   );
 }

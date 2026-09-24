@@ -15,7 +15,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { useNavigate } from "@/hooks/use-hash-route";
-import { useAuth, useRequireAuth } from "@/stores/auth-store";
+import { useAuth } from "@/stores/auth-store";
 import { apiSeed } from "@/lib/client";
 
 // Tiny floating hearts for the hero — capped for mobile.
@@ -92,8 +92,7 @@ function SparkleField() {
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const { user, loaded, refresh, openAuth } = useAuth();
-  const requireAuth = useRequireAuth();
+  const { user, loaded, refresh } = useAuth();
   const [seeding, setSeeding] = useState(false);
 
   useEffect(() => {
@@ -101,10 +100,10 @@ export default function LandingPage() {
   }, [refresh]);
 
   function handleCreate() {
-    if (requireAuth("create")) navigate("/create");
+    navigate("/create");
   }
   function handleDashboard() {
-    if (requireAuth("dashboard")) navigate("/dashboard");
+    navigate("/dashboard");
   }
 
   async function handleViewDemo() {
@@ -139,43 +138,23 @@ export default function LandingPage() {
             <span className="font-heading text-lg font-bold text-[#3B1725]">LoveStory</span>
           </div>
           <div className="flex items-center gap-2">
-            {loaded && user ? (
-              <>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleDashboard}
-                  className="text-[#3B1725] hover:bg-pink-100/60 rounded-full"
-                >
-                  My Stories
-                </Button>
-                <Button
-                  size="sm"
-                  onClick={handleCreate}
-                  className="love-btn border-0 rounded-full text-white"
-                >
-                  Create
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => openAuth("generic")}
-                  className="text-[#3B1725] hover:bg-pink-100/60 rounded-full"
-                >
-                  Sign in
-                </Button>
-                <Button
-                  size="sm"
-                  onClick={handleCreate}
-                  className="love-btn border-0 rounded-full text-white"
-                >
-                  Start
-                </Button>
-              </>
+            {loaded && user && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleDashboard}
+                className="text-[#3B1725] hover:bg-pink-100/60 rounded-full"
+              >
+                My Stories
+              </Button>
             )}
+            <Button
+              size="sm"
+              onClick={handleCreate}
+              className="love-btn border-0 rounded-full text-white"
+            >
+              Start
+            </Button>
           </div>
         </div>
       </header>
@@ -310,7 +289,7 @@ export default function LandingPage() {
               {
                 icon: ShieldCheck,
                 title: "Private & safe",
-                desc: "Your phone is never shared. Drafts stay private. Only published links are public.",
+                desc: "Drafts stay private. Only published links are public.",
               },
               {
                 icon: Share2,

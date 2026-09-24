@@ -63,6 +63,12 @@ export const apiSession = () =>
     "/api/auth/session"
   );
 
+// Creates a lightweight anonymous session when no login is required.
+export const apiGuestSession = () =>
+  request<{ creatorId: string; name: string; phone: string }>("/api/auth/guest", {
+    method: "POST",
+  });
+
 export const apiLogout = () => request<{ ok: boolean }>("/api/auth/logout", { method: "POST" });
 
 // ---- Drafts ----

@@ -17,7 +17,7 @@ photos, signature…) that's published at a unique shareable link
 - **Landing page** — premium hero, floating hearts, feature grid, 5-step flow.
 - **5-step creator flow** — Start → Emotion → Story → Memories → Preview, with
   debounced autosave (700 ms) + `localStorage` backup.
-- **Mock OTP auth** — phone + 6-digit code, `httpOnly` session cookie.
+- **Login-free guest sessions** — no phone number or OTP required; an anonymous session is created automatically.
 - **Payment + credits** — `FakePaymentProvider` (₹9 → 2 credits), server-side
   signature verification, atomic credit consumption inside a DB transaction,
   duplicate-payment & duplicate-generation protection, idempotency keys.

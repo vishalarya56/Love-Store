@@ -69,7 +69,7 @@ export default function CreatorFlow({ draftId }: { draftId?: string }) {
 
   // local form state mirrors draft fields for snappy typing
   const [form, setForm] = useState({
-    creatorName: user?.name ?? "",
+    creatorName: "",
     phone: user?.phone ?? "",
     intro: "",
     emotion: "" as string,
@@ -195,10 +195,7 @@ export default function CreatorFlow({ draftId }: { draftId?: string }) {
   function canProceed(): boolean {
     switch (step) {
       case "start":
-        return (
-          form.creatorName.trim().length >= 2 &&
-          /^(\+?91\s?)?[6-9]\d{9}$/.test(form.phone.replace(/[\s-]/g, ""))
-        );
+        return form.creatorName.trim().length >= 2;
       case "emotion":
         return !!form.emotion && form.partnerName.trim().length >= 2;
       case "story":
@@ -455,21 +452,9 @@ function StepStart({
           maxLength={50}
         />
       </div>
-      <div>
-        <Label htmlFor="ph" className="text-[#3B1725] font-medium">
-          Your phone
-        </Label>
-        <Input
-          id="ph"
-          value={form.phone}
-          onChange={(e) => set("phone", e.target.value)}
-          placeholder="9876543210"
-          inputMode="numeric"
-          className="mt-1.5 h-11 rounded-xl bg-white/70 border-pink-200/60"
-          maxLength={13}
-        />
-        <p className="text-[11px] text-[#8B6472] mt-1">
-          We only use this to sign you in. It's never shared with the recipient.
+      <div className="rounded-2xl bg-white/50 border border-pink-200/50 px-4 py-3">
+        <p className="text-sm text-[#8B6472]">
+          No account or phone number required. Just add your name and create your love story. 💕
         </p>
       </div>
       <div>

@@ -26,20 +26,30 @@ export const useAuth = create<AuthState>((set) => ({
   loaded: false,
   user: null,
   async refresh() {
-    const { apiSession } = await import("@/lib/client");
+    const { apiSession, apiGuestSession } = await import("@/lib/client");
     const r = await apiSession();
-    if (!r.success || !r.data.authenticated) {
-      set({ user: null, loaded: true });
+    if (r.success && r.data.authenticated) {
+      set({
+        user: {
+          creatorId: r.data.creatorId!,
+          name: r.data.name!,
+          phone: r.data.phone!,
+        },
+        loaded: true,
+      });
       return;
     }
-    set({
-      user: {
-        creatorId: r.data.creatorId!,
-        name: r.data.name!,
-        phone: r.data.phone!,
-      },
-      loaded: true,
-    });
+
+    // Login-free mode: create an anonymous creator/session automatically.
+    const guest = await apiGuestSession();
+    if (guest.success) {
+      set({
+        user: guest.data,
+        loaded: true,
+      });
+    } else {
+      set({ user: null, loaded: true });
+    }
   },
   setUser(u) {
     set({ user: u, loaded: true });
@@ -56,12 +66,6 @@ export const useAuth = create<AuthState>((set) => ({
 }));
 
 export function useRequireAuth() {
-  const { user, loaded, openAuth } = useAuth();
-  return (action: AuthState["intent"] = "generic") => {
-    if (!loaded || !user) {
-      openAuth(action);
-      return false;
-    }
-    return true;
-  };
+  const { loaded } = useAuth();
+  return (_action: AuthState["intent"] = "generic") => loaded;
 }
